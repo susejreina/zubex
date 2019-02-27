@@ -1,0 +1,486 @@
+{% extends './base.html' %}
+{% load static from staticfiles %}
+{% block linkcss %}
+<link rel="stylesheet" type="text/css" href="{% static 'extrusoras_app/css/mediciones_base.css' %}" />
+{% endblock %}
+{% block content %}
+<div class="row">
+  <ul class="list_maquinas" id="list_maquinas">
+    {% for maq in maquinas  %}
+    <li data-id="{{ maq.maq_id }}" data-nombre="{{ maq.maq_nombre }}">{{ maq.maq_encabezado }}</li>
+    {% endfor %}
+  </ul>
+  <input type="hidden" id="maq_id" name="maq_id" value="" />
+</div>
+{% for maq in maquinas  %}
+<div name="divmaquina" id="maq_{{ maq.maq_id }}">
+  <form class="bordered-box" action="" method="">
+    <div class="bordered-box panel-body">
+      <div class="row">
+        <div style="display: none;">
+            <input type="text" autocomplete="new-password">
+            <input type="password" autocomplete="new-password">
+        </div>
+        <div class="table-align">
+          <div class="col-md-6 table-align-item-bottom">
+            <div class="form-group row">
+              <div class="table-align">
+                <label class="col-sm-3 col-md-4 text-right table-align-item-middle">
+                  <label for="ope_id">Operario</label>
+                </label>
+                <div class="col-sm-9 col-md-8 table-align-item-middle">
+                  <div class="form-group">
+                    <select class="form-control" name="ope_id" id="ope_id_{{ maq.maq_id }}">
+                      <option value="0">Seleccione</option>
+                      {% for operario in operarios  %}
+                      <option value="{{ operario.ope_id }}">{{ operario.ope_nombre }}</option>
+                      {% endfor %}
+                    </select>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="form-group row">
+              <div class="table-align">
+                <label class="col-sm-3 col-md-4 text-right table-align-item-middle">Orden de trabajo</label>
+                <div class="col-sm-9 col-md-8 table-align-item-middle">
+                  <div class="form-group">
+                    <select class="js-example-basic-single form-control" name="rem_id" id="rem_id_{{ maq.maq_id }}">
+                      <option value="0">Seleccione</option>
+                      {% for remision in remisiones  %}
+                      <option value="{{ remision.rem_id }}" data-rem="{{ remision.pro_id.pro_id }}|{{ remision.pro_id.pro_descripcion }}|{{ remision.pro_id.pro_medida }}|{{ remision.pro_id.uni_id.uni_abreviacion }}|{{ remision.rem_nextid }}|{{ remision.pro_id.col_id.col_descripcion }}">{{ remision.rem_id }}</option>
+                      {% endfor %}
+                    </select>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="form-group row">
+              <div class="table-align">
+                <label class="col-sm-3 col-md-4 text-right table-align-item-middle">Descripción</label>
+                <div class="col-sm-9 col-md-8 table-align-item-middle">
+                  <input name="pro_descripcion" id="pro_descripcion_{{ maq.maq_id }}" class="form-control input-sm" type="text" placeholder="Descripción producto" readonly="readonly" />
+                </div>
+              </div>
+            </div>
+            <div class="form-group row">
+              <div class="table-align">
+                <label class="col-sm-3 col-md-4 text-right table-align-item-middle">Siguiente proceso</label>
+                <div class="col-sm-9 col-md-8 table-align-item-middle">
+                  <input name="rem_nextid" id="rem_nextid_{{ maq.maq_id }}" class="form-control input-sm" type="text" placeholder="Siguiente proceso" readonly="readonly" />
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-6 table-align-item-bottom">
+            <div class="form-group row">
+              <div class="table-align">
+                <label class="col-sm-3 col-md-4 text-right table-align-item-middle">Producto</label>
+                <div class="col-sm-9 col-md-8 table-align-item-middle">
+                  <input name="pro_id" id="pro_id_{{ maq.maq_id }}" class="form-control input-sm" type="text" placeholder="Descripción del producto" readonly="readonly" />
+                </div>
+              </div>
+            </div>
+            <div class="form-group row">
+              <div class="table-align">
+                <label class="col-sm-3 col-md-4 text-right table-align-item-middle">Medida</label>
+                <div class="col-sm-9 col-md-8 table-align-item-middle">
+                  <input name="pro_medida" id="pro_medida_{{ maq.maq_id }}" class="form-control input-sm" type="text" placeholder="Medida" readonly="readonly" />
+                </div>
+              </div>
+            </div>
+            <div class="form-group row">
+              <div class="table-align">
+                <label class="col-sm-3 col-md-4 text-right table-align-item-middle">Color</label>
+                <div class="col-sm-9 col-md-8 table-align-item-middle">
+                  <input name="col_descripcion" id="col_descripcion_{{ maq.maq_id }}" class="form-control input-sm" type="text" placeholder="Color" readonly="readonly" />
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="bordered-box panel-body">
+      <div class="row msg" id="msg_bobina_{{ maq.maq_id }}" role="alert"></div>
+      <div class="row pt15">
+        <div class="col-md-6">
+          <div class="form-group row">
+            <div class="table-align">
+              <label class="col-sm-3 col-md-3 col-form-label text-right table-align-item-middle">ID de bobina</label>
+              <div class="col-sm-9 col-md-9 table-align-item-middle">
+                <input name="bob_id" id="bob_id_{{ maq.maq_id }}" maxlength="30" class="form-control input-sm" type="text" placeholder="Id Bobina" readonly="readonly"/>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div class="form-group row">
+            <div class="table-align">
+              <label class="col-sm-3 col-md-3 col-form-label text-right table-align-item-middle">Número de bobina</label>
+              <div class="col-sm-9 col-md-9 table-align-item-middle">
+                <input name="bob_numero" id="bob_numero_{{ maq.maq_id }}" class="form-control input-sm" type="text" placeholder="Número de bobina" readonly="readonly"/>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-4">
+          <div class="form-group row">
+            <div class="table-align">
+              <label class="col-sm-3 col-md-3 col-form-label text-right table-align-item-middle">Fecha</label>
+              <div class="col-sm-9 col-md-9 table-align-item-middle">
+                <input name="bob_fecha" id="bob_fecha_{{ maq.maq_id }}" class="form-control input-sm" type="text" placeholder="Fecha" readonly="readonly"/>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="form-group row">
+            <div class="table-align">
+              <label class="col-sm-3 col-md-3 col-form-label text-right table-align-item-middle">Hora</label>
+              <div class="col-sm-9 col-md-9 table-align-item-middle">
+                <input name="bob_hora" id="bob_hora_{{ maq.maq_id }}" class="form-control input-sm" type="text" placeholder="Hora"  readonly="readonly"/>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="form-group row">
+            <div class="table-align">
+              <label class="col-sm-3 col-md-3 col-form-label text-right table-align-item-middle">Lote</label>
+              <div class="col-sm-9 col-md-9 table-align-item-middle">
+                <input name="bob_lote" id="bob_lote_{{ maq.maq_id }}" class="form-control input-sm" type="text" placeholder="Lote" readonly="readonly"/>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="form-group row">
+            <div class="table-align">
+              <label class="col-sm-3 col-md-3 col-form-label text-right table-align-item-middle">Metros Totales</label>
+              <div class="col-sm-9 col-md-9 table-align-item-middle">
+                <input name="bob_metros" id="bob_metros_{{ maq.maq_id }}" maxlength="10" class="form-control input-sm" type="text">
+            </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="form-group row">
+            <div class="table-align">
+              <label class="col-sm-3 col-md-3 col-form-label text-right table-align-item-middle">Peso (Kg)</label>
+              <div class="col-sm-9 col-md-9 table-align-item-middle">
+                <input name="bob_peso" id="bob_peso_{{ maq.maq_id }}" maxlength="10" class="form-control input-sm" type="text">
+                <input type="hidden" name="bobinaGuardada" id="bobinaGuardada_{{ maq.maq_id }}" value="">
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="form-group row">
+            <div class="table-align">
+                &nbsp;
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="table-align">
+          <div class="col-md-12 table-align-item-middle">
+            <div class="form-group row">
+              <div class="table-align">
+                <label class="col-sm-3 col-md-2 col-form-label text-right table-align-item-middle">Observaciones</label>
+                <div class="col-sm-9 col-md-10 table-align-item-middle">
+                  <textarea name="bob_observacion" id="bob_observacion_{{ maq.maq_id }}" class="form-control"></textarea>
+                  <input type="hidden" name="bobinaGuardada" id="bobinaGuardada_{{ maq.maq_id }}" value="">
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="table-align">
+          <div class="col-md-3 table-align-item-middle">
+            <button name="nueva_bobina" id="nueva_bobina_{{ maq.maq_id }}" class="btn btn-default grey-box btn-block mb15" type="button">Nueva Bobina</button>
+          </div>
+          <div class="col-md-3 table-align-item-middle">
+            <button name="cancelar_bobina" id="cancelar_bobina_{{ maq.maq_id }}" class="btn btn-default grey-box btn-block mb15" type="button">Cancelar Bobina</button>
+          </div>
+          <div class="col-md-3 table-align-item-middle">
+            <button name="listar_bobina" id="listar_bobina_{{ maq.maq_id }}" class="btn btn-default grey-box btn-block mb15" type="button">Lista de Bobinas</button>
+          </div>
+          <div class="col-md-3 table-align-item-middle">
+            <button name="guardar_bobina" id="guardar_bobina_{{ maq.maq_id }}" class="btn btn-default grey-box btn-block mb15" type="button">Guardar Bobina</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="bordered-box panel-body">
+      <div class="row msg" id="msg_medicion_{{ maq.maq_id }}" role="alert"></div>
+      <div class="row pt15">
+        <div class="col-md-12">
+          <div class="row">
+            <div class="col-md-4">
+              <div class="form-group row">
+                <div class="table-align">
+                  <label class="col-sm-3 col-md-5 col-form-label text-right table-align-item-middle">Medida # 1</label>
+                  <div class="col-sm-9 col-md-7 table-align-item-middle">
+                    <input name="med_metros" id="med_metros_{{ maq.maq_id }}_1" maxlength="10"  class="form-control input-sm" type="text">
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-4">
+              <div class="form-group row">
+                <div class="table-align">
+                  <label class="col-sm-3 col-md-5 col-form-label text-right table-align-item-middle">Ancho plano # 1</label>
+                  <div class="col-sm-9 col-md-7 table-align-item-middle">
+                    <input name="med_ancho" id="med_ancho_{{ maq.maq_id }}_1" maxlength="10" class="form-control input-sm" type="text">
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-4">
+              <div class="form-group row">
+                <div class="table-align">
+                  <label class="col-sm-3 col-md-5 col-form-label text-right table-align-item-middle" for="med_deslamine">Deslamine</label>
+                  <div class="col-sm-9 col-md-7 table-align-item-middle">
+                      <select class="form-control" name="med_deslamine" id="med_deslamine_{{ maq.maq_id }}">
+                        <option value="">Seleccione</option>
+                        <option value="S">Si</option>
+                        <option value="N">No</option>
+                      </select>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-4">
+              <div class="form-group row">
+                <div class="table-align">
+                  <label class="col-sm-3 col-md-5 col-form-label text-right table-align-item-middle">Encogimiento horizontal</label>
+                  <div class="col-sm-9 col-md-7 table-align-item-middle">
+                    <input name="med_enc_hor" id="med_enc_hor_{{ maq.maq_id }}" class="form-control input-sm" maxlength="10" type="text" />
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-4">
+              <div class="form-group row">
+                <div class="table-align">
+                  <label class="col-sm-3 col-md-5 col-form-label text-right table-align-item-middle">Calibre frente</label>
+                  <div class="col-sm-9 col-md-7 table-align-item-middle">
+                    <input name="med_cal_fro" id="med_cal_fro_{{ maq.maq_id }}" maxlength="10" class="form-control input-sm" type="text" />
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-4">
+              <div class="form-group row">
+                <div class="table-align">
+                  <label class="col-sm-3 col-md-5 col-form-label text-right table-align-item-middle">Temperatura de túnel</label>
+                  <div class="col-sm-9 col-md-7 table-align-item-middle">
+                    <input name="med_temperatura" id="med_temperatura_{{ maq.maq_id }}" maxlength="10" class="form-control input-sm" type="text">
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-4">
+              <div class="form-group row">
+                <div class="table-align">
+                  <label class="col-sm-3 col-md-5 col-form-label text-right table-align-item-middle">Encogimiento vertical</label>
+                  <div class="col-sm-9 col-md-7 table-align-item-middle">
+                    <input name="med_enc_ver" id="med_enc_ver_{{ maq.maq_id }}" maxlength="10" class="form-control input-sm" type="text" />
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-4 offset-md-4">
+              <div class="form-group row">
+                <div class="table-align">
+                  <label class="col-sm-3 col-md-5 col-form-label text-right table-align-item-middle">Calibre reverso</label>
+                  <div class="col-sm-9 col-md-7 table-align-item-middle">
+                    <input name="med_cal_rev" id="med_cal_rev_{{ maq.maq_id }}" maxlength="10" class="form-control input-sm" type="text" />
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="bordered-box panel-body">
+      <div class="row pt15">
+        <div class="col-md-12">
+          <div class="row">
+            <div class="col-md-6">
+              <div class="form-group row">
+                <div class="table-align">
+                  <label class="col-sm-3 col-md-5 col-form-label text-right table-align-item-middle">Medida # 2</label>
+                  <div class="col-sm-9 col-md-7 table-align-item-middle">
+                    <input name="med_metros" id="med_metros_{{ maq.maq_id }}_2" maxlength="10"  class="form-control input-sm" type="text">
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="form-group row">
+                <div class="table-align">
+                  <label class="col-sm-3 col-md-5 col-form-label text-right table-align-item-middle">Ancho plano # 2</label>
+                  <div class="col-sm-9 col-md-7 table-align-item-middle">
+                    <input name="med_ancho" id="med_ancho_{{ maq.maq_id }}_2" maxlength="10" class="form-control input-sm" type="text">
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>    
+    <div class="bordered-box panel-body">
+      <div class="row pt15">
+        <div class="col-md-12">
+          <div class="row">
+            <div class="col-md-6">
+              <div class="form-group row">
+                <div class="table-align">
+                  <label class="col-sm-3 col-md-5 col-form-label text-right table-align-item-middle">Medida # 3</label>
+                  <div class="col-sm-9 col-md-7 table-align-item-middle">
+                    <input name="med_metros" id="med_metros_{{ maq.maq_id }}_3" maxlength="10"  class="form-control input-sm" type="text">
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="form-group row">
+                <div class="table-align">
+                  <label class="col-sm-3 col-md-5 col-form-label text-right table-align-item-middle">Ancho plano # 3</label>
+                  <div class="col-sm-9 col-md-7 table-align-item-middle">
+                    <input name="med_ancho" id="med_ancho_{{ maq.maq_id }}_3" maxlength="10" class="form-control input-sm" type="text">
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="bordered-box panel-body">
+      <div class="row pt15">
+        <div class="col-md-12">
+          <div class="row">
+            <div class="col-md-6">
+              <div class="form-group row">
+                <div class="table-align">
+                  <label class="col-sm-3 col-md-5 col-form-label text-right table-align-item-middle">Medida # 4</label>
+                  <div class="col-sm-9 col-md-7 table-align-item-middle">
+                    <input name="med_metros" id="med_metros_{{ maq.maq_id }}_4" maxlength="10"  class="form-control input-sm" type="text">
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="form-group row">
+                <div class="table-align">
+                  <label class="col-sm-3 col-md-5 col-form-label text-right table-align-item-middle">Ancho plano # 4</label>
+                  <div class="col-sm-9 col-md-7 table-align-item-middle">
+                    <input name="med_ancho" id="med_ancho_{{ maq.maq_id }}_4" maxlength="10" class="form-control input-sm" type="text">
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="bordered-box panel-body">
+      <div class="row pt15">
+        <div class="col-md-12">
+          <div class="row">
+            <div class="col-md-6">
+              <div class="form-group row">
+                <div class="table-align">
+                  <label class="col-sm-3 col-md-5 col-form-label text-right table-align-item-middle">Medida # 5</label>
+                  <div class="col-sm-9 col-md-7 table-align-item-middle">
+                    <input name="med_metros" id="med_metros_{{ maq.maq_id }}_5" maxlength="10"  class="form-control input-sm" type="text">
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="form-group row">
+                <div class="table-align">
+                  <label class="col-sm-3 col-md-5 col-form-label text-right table-align-item-middle">Ancho plano # 5</label>
+                  <div class="col-sm-9 col-md-7 table-align-item-middle">
+                    <input name="med_ancho" id="med_ancho_{{ maq.maq_id }}_5" maxlength="10" class="form-control input-sm" type="text">
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="bordered-box panel-body">
+      <div class="row pt15">
+        <div class="col-md-12">
+          <div class="row">
+            <div class="col-md-4 col-sm-6">
+              <button id="coordinador_{{ maq.maq_id }}" name="revision" class="btn btn-default grey-box btn-block mb15" type="button">Revisión por coordinador</button>
+            </div>
+            <div class="col-md-4 col-sm-6">
+              <button id="guardar_mediciones_{{ maq.maq_id }}" name="guardar_mediciones" class="btn btn-default grey-box btn-block mb15" type="button">Guardar parametros</button>
+            </div>
+            <div class="col-md-4 col-sm-6">
+              <button id="finalizar_orden_{{ maq.maq_id }}" name="finalizar_orden" class="btn btn-default grey-box btn-block mb15" type="button">Finalizar proceso</button>
+            </div>
+            <div class="col-md-4 col-sm-6">
+              <button id="calidad_{{ maq.maq_id }}" name="revision" class="btn btn-default grey-box btn-block mb15" type="button">Revisión de calidad</button>
+            </div>
+            <div class="col-md-4 col-sm-6">
+              <button id="imprimir_extrusora_{{ maq.maq_id }}" name="imprimir_extrusora" class="btn btn-default grey-box btn-block mb15" type="button">Imprimir etiqueta</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </form>
+  <div id="historial_medicion_{{ maq.maq_id }}" name="historial_medicion" class="bordered-box panel-body">
+    <div class="pt15">
+      <div class="row mb15">
+        <div class="col-md-11 col-md-offset-1">
+          <h4 class="m0 mb20">Historial de mediciones</h4>
+        </div>
+      </div>
+      <div id="tabla_historial_medicion" class="table-responsive">
+      </div>
+    </div>
+  </div>
+  <div id="historial_revision_{{ maq.maq_id }}" name="historial_revision" class="bordered-box panel-body">
+    <div class="pt15">
+      <div class="row mb15">
+        <div class="col-xs-12 col-md-11 col-md-offset-1">
+          <h4 class="m0 mb20">Historial de revisiones</h4>
+        </div>
+      </div>
+      <div id="tabla_historial_revision" class="table-responsive">
+      </div>
+    </div>
+  </div>
+</div>
+{% endfor %}
+{% include "./modals/revision.html" %}
+{% include "./modals/lista_bobinas.html" %}
+{% include "./modals/etiqueta_extrusora.html" %}
+{% include "./modals/confirmacion_impresion.html" %}
+{% include "./modals/confirmacion.html" %}
+{% endblock %}
+{% block scripts %}
+  <script type="text/javascript" src="{% static 'extrusoras_app/js/medicion_base.js' %}"></script>
+  <script type="text/javascript" src="{% static 'extrusoras_app/js/medicion_extrusoras.js' %}"></script>
+{% endblock %}

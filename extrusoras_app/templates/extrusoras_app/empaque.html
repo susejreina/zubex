@@ -1,0 +1,333 @@
+{% extends './base.html' %}
+{% load static from staticfiles %}
+{% block linkcss %}
+<link rel="stylesheet" type="text/css" href="{% static 'extrusoras_app/css/mediciones_base.css' %}" />
+{% endblock %}
+{% block content %}
+<form class="bordered-box" autocomplete="off" action="" method="">
+  <div class="bordered-box panel-body">
+    <div class="row msg" id="msg_remision" role="alert"></div>
+    <div class="row">
+      <div class="table-align">
+        <div class="col-md-6 table-align-item-bottom">
+          <div class="form-group row">
+            <div class="table-align">
+              <label class="col-sm-3 col-md-4 text-right table-align-item-middle"><label for="ope_id">Operario</label></label>
+              <div class="col-sm-9 col-md-8 table-align-item-middle">
+                <div class="form-group">
+                  <select class="form-control" id="ope_id">
+                    <option value="0">Seleccione</option>
+                    {% for operario in operarios  %}
+                    <option value="{{ operario.ope_id }}">{{ operario.ope_nombre }}</option>
+                    {% endfor %}
+                  </select>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="form-group row">
+            <div class="table-align">
+              <label class="col-sm-3 col-md-4 text-right table-align-item-middle">Orden de trabajo</label>
+              <div class="col-sm-9 col-md-8 table-align-item-middle">
+                <div class="form-group">
+                  <select class="js-rem-id form-control" name="state" id="rem_id">
+                  </select>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="form-group row">
+            <div class="table-align">
+              <label class="col-sm-3 col-md-4 text-right table-align-item-middle">Descripción</label>
+              <div class="col-sm-9 col-md-8 table-align-item-middle">
+                <input id="pro_descripcion" class="form-control input-sm" type="text" placeholder="Descripción producto" readonly="readonly" />
+              </div>
+            </div>
+          </div>
+          <div class="form-group row">
+            <div class="table-align">
+              <label class="col-sm-3 col-md-4 text-right table-align-item-middle">Siguiente proceso</label>
+              <div class="col-sm-9 col-md-8 table-align-item-middle">
+                <input id="rem_nextid" class="form-control input-sm" type="text" placeholder="Siguiente proceso" readonly="readonly" />
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-6 table-align-item-bottom">
+          <div class="form-group row">
+            <div class="table-align">
+              <label class="col-sm-3 col-md-4 text-right table-align-item-middle">Producto</label>
+              <div class="col-sm-9 col-md-8 table-align-item-middle">
+                <input id="pro_id" class="form-control input-sm" type="text" placeholder="Descripción del producto" readonly="readonly" />
+              </div>
+            </div>
+          </div>
+          <div class="form-group row">
+            <div class="table-align">
+              <label class="col-sm-3 col-md-4 text-right table-align-item-middle">Medida</label>
+              <div class="col-sm-9 col-md-8 table-align-item-middle">
+                <input id="pro_medida" class="form-control input-sm" type="text" placeholder="Medida" readonly="readonly" />
+              </div>
+            </div>
+          </div>
+          <div class="form-group row">
+            <div class="table-align">
+              <label class="col-sm-3 col-md-4 text-right table-align-item-middle">Color</label>
+              <div class="col-sm-9 col-md-8 table-align-item-middle">
+                <input id="col_descripcion" class="form-control input-sm" type="text" placeholder="Color" readonly="readonly" />
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="bordered-box panel-body">
+    <div class="row msg" id="msg_bobina" role="alert"></div>
+    <div class="row pt15">
+      <div class="col-md-6">
+        <div class="form-group row">
+          <div class="table-align">
+            <label class="col-sm-3 col-md-3 col-form-label text-right table-align-item-middle">ID de bobina</label>
+            <div class="col-sm-9 col-md-9 table-align-item-middle">
+              <input id="bob_id" class="form-control input-sm" type="text" maxlength="30" placeholder="Id Bobina" />
+              <input type="hidden" id="list_bobinas" name="list_bobinas" value="">
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-6">
+        <div class="form-group row">
+          <div class="table-align">
+            <label class="col-sm-3 col-md-3 col-form-label text-right table-align-item-middle">Número de bobina</label>
+            <div class="col-sm-9 col-md-9 table-align-item-middle">
+              <input id="bob_numero" class="form-control input-sm" type="text" placeholder="Número de bobina" readonly="readonly"/>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="row">
+        <div class="col-md-6">
+            <div class="form-group row">
+                <div class="table-align">
+                    <label class="col-sm-3 col-md-3 col-form-label text-right table-align-item-middle">Metros Totales</label>
+                    <div class="col-sm-9 col-md-9 table-align-item-middle">
+                        <input id="bob_metro_imp" name="bob_metro_imp" maxlength="7" class="form-control input-sm" type="text">
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="form-group row">
+                <div class="table-align">
+                    <label class="col-sm-3 col-md-3 col-form-label text-right table-align-item-middle">Peso (Kg)</label>
+                    <div class="col-sm-9 col-md-9 table-align-item-middle">
+                        <input id="bob_peso_imp" name="bob_peso_imp" maxlength="7" class="form-control input-sm" type="text">
+                        <input type="hidden" name="bobinaGuardada" id="bobinaGuardada_{{ maq.maq_id }}" value="">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="table-align">
+            <div class="col-md-6 table-align-item-middle">
+                &nbsp;
+            </div>
+            <div class="col-md-3 table-align-item-middle">
+                <button id="historico_bobina" name="historico_bobina" class="btn btn-default grey-box btn-block mb15" type="button">Histórico Bobina</button>
+            </div>            
+            <div class="col-md-3 table-align-item-middle">
+                <button id="guardar_bobina" name="guardar_bobina" class="btn btn-default grey-box btn-block mb15" type="button">Guardar Bobina</button>
+            </div>
+        </div>
+    </div>
+  </div>
+  <div class="bordered-box panel-body">
+      <div class="row msg" id="msg_medicion" role="alert"></div>
+      <div class="row pt15">
+        <div class="col-md-12">
+            <div class="row">
+              <div class="col-md-4">
+                  <div class="form-group row">
+                      <div class="table-align">
+                          <label class="col-sm-3 col-md-5 col-form-label text-right table-align-item-middle">Medida</label>
+                          <div class="col-sm-9 col-md-7 table-align-item-middle">
+                              <input id="mem_metro" class="form-control input-sm" type="text" value="">
+                          </div>
+                      </div>
+                  </div>
+              </div>
+              <div class="col-md-4">
+                  <div class="form-group row">
+                      <div class="table-align">
+                          <label class="col-sm-3 col-md-5 col-form-label text-right table-align-item-middle">Kilo</label>
+                          <div class="col-sm-9 col-md-7 table-align-item-middle">
+                              <input id="mem_kilo" class="form-control input-sm" type="text" value="">
+                          </div>
+                      </div>
+                  </div>
+              </div>
+              <div class="col-md-4">
+                <div class="form-group row">
+                  <div class="table-align">
+                    <label class="col-sm-3 col-md-5 col-form-label text-right table-align-item-middle" for="med_deslamine">Apariencia</label>
+                    <div class="col-sm-9 col-md-7 table-align-item-middle">
+                        <select class="form-control" id="mem_apariencia">
+                          <option value="">Seleccione</option>
+                          <option value="S">Si</option>
+                          <option value="N">No</option>
+                        </select>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+        </div>
+      </div>
+      <div class="row pt15">
+          <div class="col-md-12">
+              <div class="row">
+                  <div class="col-md-4 col-sm-6">
+                    <button id="coordinador" name="revision" class="btn btn-default grey-box btn-block mb15" type="button">Revisión por coordinador</button>
+                  </div>
+                  <div class="col-md-4 col-sm-6">
+                    <button id="guardar_mediciones" class="btn btn-default grey-box btn-block mb15" type="button">Guardar parametros</button>
+                  </div>
+                  <div class="col-md-4 col-sm-6">
+                    <button id="finalizar_proceso" class="btn btn-default grey-box btn-block mb15" type="button">Finalizar proceso</button>
+                  </div>
+                  <div class="col-md-4 col-sm-6">
+                    <button id="calidad" name="revision" class="btn btn-default grey-box btn-block mb15" type="button">Revisión de calidad</button>
+                  </div>
+                  <div class="col-md-4 col-sm-6">
+                    &nbsp;
+                  </div>
+              </div>
+          </div>
+      </div>
+  </div>
+</form>
+<div id="historial_medicion" class="bordered-box panel-body">
+  <div class="pt15">
+    <div class="row mb15">
+      <div class="col-md-11 col-md-offset-1">
+        <h4 class="m0 mb20">Historial de mediciones</h4>
+      </div>
+    </div>
+    <div id="tabla_historial_medicion" class="table-responsive">
+    </div>
+  </div>
+</div>
+<div id="historial_revision" class="bordered-box panel-body">
+  <div class="pt15">
+    <div class="row mb15">
+      <div class="col-xs-12 col-md-11 col-md-offset-1">
+        <h4 class="m0 mb20">Historial de revisiones</h4>
+      </div>
+    </div>
+    <div id="tabla_historial_revision" class="table-responsive">
+    </div>
+  </div>
+</div>
+<div id="cajas" name="cajas" class="bordered-box panel-body">
+  <div class="pt15">
+    <div class="row msg" id="msg_add_box" name="msg_add_box" role="alert"></div>
+    <div class="row">
+      <div class="col-md-4">
+          <div class="form-group row">
+              <div class="table-align">
+                  <label class="col-sm-3 col-md-5 col-form-label text-right table-align-item-middle">Nro de Caja</label>
+                  <div class="col-sm-9 col-md-7 table-align-item-middle">
+                      <input id="nro_caja" name="nro_caja" maxlength="10" class="form-control input-sm" type="text" value="">
+                      <input id="id_caja" name="id_caja" maxlength="4" class="form-control input-sm" type="hidden" value="0">
+                  </div>
+              </div>
+          </div>
+      </div>
+      <div class="col-md-4">
+          <div class="form-group row">
+              <div class="table-align">
+                  <label class="col-sm-3 col-md-5 col-form-label text-right table-align-item-middle">Peso</label>
+                  <div class="col-sm-9 col-md-7 table-align-item-middle">
+                      <input id="peso" name="peso" maxlength="10" class="form-control input-sm" type="text" value="">
+                  </div>
+              </div>
+          </div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-4">
+          <div class="form-group row">
+              <div class="table-align">
+                  <label class="col-sm-3 col-md-5 col-form-label text-right table-align-item-middle">Id bobina</label>
+                  <div class="col-sm-9 col-md-7 table-align-item-middle">
+                      <input id="id_caja_bobina" name="id_caja_bobina" maxlength="30" class="form-control input-sm" type="text" value="">
+                  </div>
+              </div>
+          </div>
+      </div>
+      <div class="col-md-4">
+          <div class="form-group row">
+              <div class="table-align">
+                  <label class="col-sm-3 col-md-5 col-form-label text-right table-align-item-middle">Metros</label>
+                  <div class="col-sm-9 col-md-7 table-align-item-middle">
+                      <input id="metros" name="metros" maxlength="10" class="form-control input-sm" type="text" value="">
+                  </div>
+              </div>
+          </div>
+      </div>
+      <div class="col-md-4">
+        <div class="form-group row">
+            <div class="table-align">
+                <img name="add_box" id="add_box" src="{% static 'extrusoras_app/img/add.png' %}" width="89" height="25" class="float-left" alt="Agregar Caja" title="Agregar Caja"/>
+            </div>
+        </div>
+      </div>
+    </div>
+    <div class="row">
+        <div class="col-md-8">
+            <div class="form-group row">
+                <div class="table-align">
+                    <label class="col-sm-3 col-md-2 col-form-label text-right table-align-item-middle">Bobinas Involucradas</label>
+                    <div name="involved_bobinas" id="involved_bobinas" class="col-sm-9 col-md-10 table-align-item-middle">
+                      <ul id="bobinas_involved" class="bobinas_involved">
+                      </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="form-group row">
+                <div class="table-align">
+                    <button id="save_caja" name="save_caja" class="btn btn-default grey-box btn-block mb15" type="button">Guardar Caja</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+      <div class=" col-xs-12 col-md-6 col-md-offset-3">
+        <table class="table" id="bobinas_por_cajas">
+          <thead>
+            <tr>
+              <th scope="col">Nro Caja</th>
+              <th scope="col" colspan="2">Acción</th>
+            </tr>
+          </thead>
+          <tbody>
+
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>  
+{% include "./modals/revision.html" %}
+{% include "./modals/historico_bobinas.html" %}
+{% include "./modals/confirmacion.html" %}
+{% endblock %}
+{% block scripts %}
+  <script type="text/javascript" src="{% static 'extrusoras_app/js/medicion_base.js' %}"></script>
+  <script type="text/javascript" src="{% static 'extrusoras_app/js/medicion_empaque.js' %}"></script>
+{% endblock %}

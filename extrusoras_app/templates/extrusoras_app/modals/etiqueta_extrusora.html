@@ -1,0 +1,128 @@
+{% load static from staticfiles %}
+<div id="modal_listar_bobinas" class="modal fade">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h4 class="modal-title">Imprimir etiqueta</h4>
+            </div>
+            <div class="modal-body">
+                <div class="">
+            		<div class="panel panel-default">
+                  <div class="row row-bobina" style="height: 50px;" >
+                    <div class="col-xs-6">
+                      <img class="img-responsive zubex-logo"  src="{% static 'extrusoras_app/img/logo.png' %}"/>
+                    </div>
+                    <div class="col-xs-6 ">
+                      <strong class="txt-bobina-value" style="line-height: 100px">Extrusora</strong>
+                    </div>
+                  </div>
+            			<div class="row row-bobina">
+            				<div class="col-xs-6 ">
+            					<span class="txt-bobina">ID bobina: </span>
+            					<strong class="txt-bobina-value"></strong>
+            				</div>
+            				<div class="col-xs-6 ">
+            					<span class="txt-bobina">Remisión: </span>
+            					<strong class="txt-bobina-value"></strong>
+            				</div>
+            			</div>
+
+            			<div class="row row-bobina">
+            				<div class="col-xs-6 ">
+            					<span class="txt-bobina">Num. bobina: </span>
+            					<strong class="txt-bobina-value"></strong>
+            				</div>
+            				<div class="col-xs-6 ">
+            					<span class="txt-bobina">Fecha: </span>
+            					<strong class="txt-bobina-value"></strong>
+            				</div>
+            			</div>
+
+            			<div class="row row-bobina">
+            				<div class="col-xs-6 ">
+            					<span class="txt-bobina">Peso: </span>
+            					<strong class="txt-bobina-value"> Kg</strong>
+            				</div>
+            				<div class="col-xs-6 ">
+            					<span class="txt-bobina">Medida: </span>
+            					<strong class="txt-bobina-value"></strong>
+            				</div>
+            			</div>
+
+            			<div class="row row-bobina">
+            				<div class="col-xs-6 ">
+            					<span class="txt-bobina txt-bobina-normal">Calibre frontal: </span>
+            					<strong class="txt-bobina-normal"></strong>
+            				</div>
+            				<div class="col-xs-6 ">
+            					<span class="txt-bobina txt-bobina-normal">Calibre reverso: </span>
+            					<strong class="txt-bobina-normal">]</strong>
+            				</div>
+            			</div>
+
+            			<div class="row row-bobina">
+            				<div class="col-xs-6 ">
+            					<span class="txt-bobina txt-bobina-normal">Enc. ancho plano: </span>
+            					<strong class="txt-bobina-normal">%</strong>
+            				</div>
+            				<div class="col-xs-6 ">
+            					<span class="txt-bobina txt-bobina-normal">En. Dir. Maq.: </span>
+            					<strong class="txt-bobina-normal">%</strong>
+            				</div>
+            			</div>
+
+            			<div class="row row-bobina">
+            				<div class="col-xs-12 descripcion-especial">
+            					<span class="txt-bobina">Descripción: </span>
+            					<strong class="txt-bobina-value"></strong>
+            				</div>
+            			</div>
+
+            			<div class="row row-bobina">
+            				<div class="col-xs-6 ">
+            					<span class="txt-bobina txt-bobina-normal">Color: </span>
+            					<strong class="txt-bobina-normal"></strong>
+            				</div>
+            				<div class="col-xs-6 ">
+            					<span class="txt-bobina txt-bobina-normal">Cod. prod: </span>
+            					<strong class="txt-bobina-normal"></strong>
+            				</div>
+            			</div>
+
+            			<div class="row row-bobina">
+            				<div class="col-xs-6 ">
+            					<span class="txt-bobina txt-bobina-normal">Metros:  </span>
+            					<strong class="txt-bobina-normal"></strong>
+            				</div>
+            				<div class="col-xs-6 ">
+            					<span class="txt-bobina txt-bobina-normal">Turno: </span>
+            					<strong class="txt-bobina-normal"></strong>
+            				</div>
+            			</div>
+
+            			<div class="row row-bobina">
+            				<div class="col-xs-6 ">
+            					<span class="txt-bobina txt-bobina-normal">Operario: </span>
+            					<strong class="txt-bobina-normal"></strong>
+            				</div>
+                    <div class="col-xs-6">
+              					<span class="txt-bobina txt-bobina-normal">Observaciones: </span>
+              					<strong class="txt-bobina-normal"></strong>
+                    </div>
+            			</div>
+
+            			<div class="row row-bobina">
+
+            			</div>
+
+            		</div>
+
+            	</div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>

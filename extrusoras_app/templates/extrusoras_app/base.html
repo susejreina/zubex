@@ -1,0 +1,48 @@
+{% load static from staticfiles %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>ZUBEX - {{ title }}</title>
+        <link rel="shortcut icon" type="image/png" href="{% static 'extrusoras_app/img/favicon.ico' %}"/>
+        <link rel="stylesheet" type="text/css" href="{% static 'extrusoras_app/css/font-awesome.css' %}">
+        <link rel="stylesheet" type="text/css" href="{% static 'extrusoras_app/css/bootstrap.min.css' %}">
+        <link rel="stylesheet" type="text/css" href="{% static 'extrusoras_app/css/bootstrap-theme.min.css' %}">
+        <link rel="stylesheet" type="text/css" href="{% static 'extrusoras_app/css/main.css' %}">
+        <link rel="stylesheet" type="text/css" href="{% static 'extrusoras_app/css/style-new.css' %}">
+        <link rel="stylesheet" type="text/css" href="{% static 'extrusoras_app/css/select2.min.css' %}" />
+        {% block linkcss %}
+        {% endblock %}
+        <script type="text/javascript" src="{% static 'extrusoras_app/js/jquery-3.2.1.min.js' %}"></script>
+        <script type="text/javascript" src="{% static 'extrusoras_app/js/jquery-ui.min.js' %}"></script>
+        <script type="text/javascript" src="{% static 'extrusoras_app/js/DjangoAjax.js' %}"></script>
+        <script type="text/javascript" src="{% static 'extrusoras_app/js/tether.js' %}"></script>
+        <script type="text/javascript" src="{% static 'extrusoras_app/js/bootstrap.min.js' %}"></script>
+        <script type="text/javascript" src="{% static 'extrusoras_app/js/select2.min.js' %}"></script>
+        {% block scripts %}
+        {% endblock %}
+    </head>
+</head>
+<body class="my-body">
+  <div class="container my-content content-user">
+  <div class="panel panel-default">
+    <!--.header-->
+    <header class="header">
+      <img src="{% static 'extrusoras_app/img/logo.png' %}" width="220" height="150" class="float-left" alt="Zubex" title="Zubex"/>
+      <span class="float-right title" id="title"></span>
+    </header>
+    <!--/.header-->
+    <div class="tab-content">
+    {% block content %}
+    {% endblock %}
+    </div>
+    <!--.footer-->
+    <footer class="footer"></footer>
+    <!--/.footer-->
+  </div>
+  </div>
+</body>
+</html>

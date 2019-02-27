@@ -1,0 +1,81 @@
+{% extends './base.html' %}
+{% load static from staticfiles %}
+{% block linkcss %}
+<link rel="stylesheet" type="text/css" href="{% static 'extrusoras_app/css/mediciones_base.css' %}" />
+{% endblock %}
+{% block content %}
+<div class="bordered-box panel-body">
+    <div class="row msg" id="msg_bobinas" role="alert"></div>
+    <div class="row">
+      <div class="table-align">
+        <div class="col-md-6 table-align-item-bottom">
+          <div class="form-group row">
+            <div class="table-align">
+              <label class="col-sm-3 col-md-2 text-right table-align-item-middle"><label for="ope_id">Operario</label></label>
+              <div class="col-sm-9 col-md-4 table-align-item-middle">
+                <div class="form-group">
+                  <select class="form-control" id="ope_id">
+                    <option value="0">Seleccione</option>
+                    {% for operario in operarios  %}
+                    <option value="{{ operario.ope_id }}">{{ operario.ope_nombre }}</option>
+                    {% endfor %}
+                  </select>
+                </div>
+              </div>
+              <label class="col-sm-3 col-md-2 text-right table-align-item-middle"><label for="ope_id">Orden de Trabajo</label></label>
+              <div class="col-sm-9 col-md-4 table-align-item-middle">
+                <div class="form-group">
+                    <select class="js-rem-id form-control" name="state" id="rem_id">
+                    </select>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="table-align">
+        <div class="col-md-6 table-align-item-bottom">
+            <div class="table-align">
+              <label class="col-sm-3 col-md-2 text-right table-align-item-middle">
+                  <label>ID Bobina</label>
+              </label>
+              <div class="col-sm-9 col-md-4 table-align-item-middle">
+                <input id="nro_bobina" name="nro_bobina" maxlength="30"
+                class="form-control input-sm" type="text" />
+              </div>
+              <div class="col-sm-3 col-md-2 text-right table-align-item-middle">
+                <button id="add_bobina" class="btn btn-default grey-box btn-block mb15" type="button">Agregar Bobina</button>
+              </div>
+              <div class="col-sm-9 col-md-4 table-align-item-middle">&nbsp;</div>
+            </div>
+        </div>
+      </div>
+    </div>
+</div>
+<div class="bordered-box panel-body" id="panel_list_bobinas">
+  <div class="pt15">
+    <div class="row mb15">
+      <div class="col-md-11 col-md-offset-1">
+        <h4 class="m0 mb20">Listado de bobinas a asignar</h4>
+      </div>
+    </div>
+    <div id="lista_bobinas" class="table-responsive">
+    </div>
+  </div>
+  <div class="pt15">
+    <div class="row mb15">
+      <div class="table-align">
+        <div class="col-md-3 col-md-offset-4 table-align-item-middle">
+          <button id="asignar_bobina" class="btn btn-default grey-box btn-block mb15" type="button">Asignar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+{% block scripts %}
+  <script type="text/javascript" src="{% static 'extrusoras_app/js/medicion_base.js' %}"></script>
+  <script type="text/javascript" src="{% static 'extrusoras_app/js/almacen.js' %}"></script>
+{% endblock %}
