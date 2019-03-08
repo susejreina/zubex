@@ -284,6 +284,9 @@ function guardarMedicion(obj){
 		}
 		if(validado){
 			showMessage('msg_medicion_'+id,msg,"alert-warning");
+			$('html, body').animate({
+				scrollTop: $('#msg_medicion_'+maq).offset().top
+			}, 1500);
 			return false;
 		}
 		datos = {

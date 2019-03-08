@@ -21,12 +21,13 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # See https://docs.djangoproject.com/en/2.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = os.environ.get('DJANGO_SECRET_KEY', 'jfyssv+#f$m9fe+ss-ik@f$z3(_=i)s#+1h7#(otkj6=jksmk*')
+SECRET_KEY = 'jfyssv+#f$m9fe+ss-ik@f$z3(_=i)s#+1h7#(otkj6=jksmk*'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
-ALLOWED_HOSTS = ['192.168.42.15']
+
+ALLOWED_HOSTS = ['127.0.0.1','localhost','192.168.1.57']
 
 # Application definition
 
@@ -39,7 +40,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     # PostgreSQL search
-    'django.contrib.postgres',
+    'django.contrib.postgres'
 ]
 
 MIDDLEWARE = [
@@ -80,7 +81,7 @@ WSGI_APPLICATION = 'extrusoras.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'controlextrusoras_2',
+        'NAME': 'control_final_v2',
         'USER': 'usr_extrusoras',
         'PASSWORD': 'usr_extrusoras',
         'HOST': 'localhost',
@@ -128,4 +129,4 @@ STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'static/')
 
 MEDIA_URL = "/media/"
-MEDIA_ROOT = r'\\zubexsap1\Entrega\ZTELA'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media/')

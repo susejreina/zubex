@@ -15,16 +15,18 @@ def ls(ruta):
                 })
     return ls
 
-files = ls(r'\\zubexsap1\Entrega\BM')
+files = ls(r'C:\Development\ZUBEX\ztela\virenv_extrusoras\extrusoras_v2\extrusoras_app\aqui')
 
 if files:
-    conn = psycopg2.connect(database='controlextrusoras_2',user='usr_extrusoras',password='usr_extrusoras', host='localhost')
+    conn = psycopg2.connect(database='control_final_v2',user='usr_extrusoras',password='usr_extrusoras', host='localhost')
     cur = conn.cursor()
+    remisiones = []
+    not_in = ""
     try:
         for archivo in files:
-            #with open(archivo['ruta'],'r', encoding='utf-16-le') as f:
+            with open(archivo['ruta'],'r', encoding='utf-16-le') as f:
             #with open(archivo['ruta'],'r') as f:
-            with open(archivo['ruta'],'r', encoding='utf-16-be') as f:
+            #with open(archivo['ruta'],'r', encoding='utf-16-be') as f:
                 it=(lineas for i,lineas in enumerate(f) if i>=1)
                 for lineas in it:
                     rem_id = rem_nextid = pro_id = pro_nextid =  None

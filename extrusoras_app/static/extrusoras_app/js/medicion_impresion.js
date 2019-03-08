@@ -49,7 +49,31 @@ $(document).ready(function() {
 	$("[name=mei_vis_7],[name=mei_vis_8],[name=mei_cat_blanca],[name=mei_cat_color],[name=mei_hume_area]").on("keypress",integerNumber);
 	$("[name=mei_metro],[name=mei_ancho_plano],[name=mei_temp_infrarojo],[name=mei_temp_tablero],[name=mei_temp_area]").on("keypress",floatNumber);
 	$("[name=bob_metro_imp],[name=bob_peso_imp]").on("keypress",floatNumber);
+
+	//Habilitando campos
+	$("[name=mei_metro],[name=mei_ancho_plano]").each(function(){
+		if(($(this).attr("name")=="mei_metro" && $(this).attr("id").split("_")[3]!=1) || ($(this).attr("name")=="mei_ancho_plano" && $(this).attr("id").split("_")[4]!=1))
+		{
+			$(this).prop("disabled",true);
+		}
+	});
+	$("[name=mei_ancho_plano]").on("blur",activarNuevoRegistro);
 });
+function activarNuevoRegistro(){
+	let qtyMediciones = 3;
+	let nro = parseInt($(this).attr("id").split("_")[4]);
+	let maq = $(this).attr("id").split("_")[3];
+	if(nro<qtyMediciones){
+		if($.trim($("#mei_metro_"+maq+"_"+nro).val())!="" && $.trim($("#mei_ancho_plano_"+maq+"_"+nro).val())!=""){
+			nro = nro + 1;
+			$("#mei_metro_"+maq+"_"+nro).prop("disabled",false);
+			$("#mei_ancho_plano_"+maq+"_"+nro).prop("disabled",false);
+			if(nro>2){
+				$("#mei_metro_"+maq+"_"+nro).focus();
+			}
+		}
+	}
+}
 function getNroBobina(e){
 	let ascii = e.keyCode;
 	if(ascii==13){
@@ -175,25 +199,15 @@ function guardarBobina(){
 	}
 }
 function guardarMedicion(obj){
+	var qtyMediciones = 3;
 	let maq = $("#maq_id").val();
 	if($.trim($('#bob_id_'+maq).val())!="" && $.trim($('#bob_numero_'+maq).val())!=""){
-		if($.trim($('#mei_metro_'+maq).val())=="" || $.trim($('#mei_ancho_plano_'+maq).val())==""){
-				showMessage('msg_medicion_'+maq,"La medida y el ancho plano son obligatorios.","alert-warning");
-				$('html, body').animate({
-					scrollTop: $('#msg_medicion_'+maq).offset().top
-				}, 1500);
-				return false;
-		}
-
-		$('#mei_vis_1_'+maq+',#mei_vis_2_'+maq+',#mei_vis_3_'+maq+',#mei_vis_4_'+maq+', #mei_vis_5_'+maq+',#mei_vis_6_'+maq).on("keypress",integerNumber);
-		$('#mei_vis_7_'+maq+',#mei_vis_8_'+maq+', #mei_cat_blanca_'+maq+',#mei_cat_color_'+maq+',#mei_hume_area_'+maq).on("keypress",integerNumber);
-		$('#mei_metro_'+maq+',#mei_ancho_plano_'+maq+',#mei_temp_infrarojo_'+maq+',#mei_temp_tablero_'+maq+',#mei_temp_area_'+maq).on("keypress",floatNumber);
+		valido = 'si';
 
 		let intFields = ['#mei_vis_1_'+maq, '#mei_vis_2_'+maq, '#mei_vis_3_'+maq, '#mei_vis_4_'+maq,
 						 '#mei_vis_5_'+maq, '#mei_vis_6_'+maq, '#mei_vis_7_'+maq, '#mei_vis_8_'+maq,
 						 '#mei_cat_blanca_'+maq, '#mei_cat_color_'+maq, '#mei_hume_area_'+maq,
-					 	 '#mei_metro_'+maq, '#mei_ancho_plano_'+maq, '#mei_temp_infrarojo_'+maq,
-							'#mei_temp_tablero_'+maq, '#mei_temp_area_'+maq,];
+					 	 '#mei_temp_infrarojo_'+maq, '#mei_temp_tablero_'+maq, '#mei_temp_area_'+maq,];
 		let desFields = ["La viscosidad Unidad 1 debe ser numérico!",
 						"La viscosidad Unidad 2 debe ser numérico!",
 						"La viscosidad Unidad 3 debe ser numérico!",
@@ -205,12 +219,22 @@ function guardarMedicion(obj){
 						"La catalización de tinta blanca debe ser numérico!",
 						"La catalización de tinta de colores debe ser numérico!",
 						"La humedad del área debe ser numérico!",
-						"La medida debe ser numérico!",
-						"El ancho plano debe ser numérico!",
 						"La temperatura de infrarojo debe ser numérico!",
 						"La temperatura de tablero debe ser numérico!",
 						"La temperatura de área debe ser numérico!",];
-		let decimalFields = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 2, 1, 1, 1];
+		let decimalFields = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1];
+		for(qM=1;qM<=qtyMediciones;qM++){
+			if((valido=='si') && ($.trim($('#med_metros_'+id+'_'+qM).val())=="" || $.trim($('#med_ancho_'+id+'_'+qM).val())=="")){
+					showMessage('msg_medicion_'+id,"Las "+qtyMediciones+" mediciones de medida y ancho plano son obligatorias.","alert-warning");
+					$('html, body').animate({
+						scrollTop: $('#msg_medicion_'+id).offset().top
+					}, 2000);
+					valido = 'no';
+			}
+			intFields.push('#med_metros_'+id+'_'+qM,'#med_ancho_'+id+'_'+qM);
+			desFields.push("La medida debe ser numérico!","El ancho plano debe ser numérico!");
+			decimalFields.push(2,2);
+		}		
 		let msg = "";
 		for($i=0;$i<intFields.length;$i++){
 			validado = validateNumber($(intFields[$i]));
@@ -244,68 +268,81 @@ function guardarMedicion(obj){
 			}, 1500);
 			return false;
 		}
+		datos = {'ope_id': $('#ope_id_'+maq).val(),
+			'maq_id': maq,
+			'rem_id': $('#rem_id_'+maq).val(),
+			'bob_id': $('#bob_id_'+maq).val(),
+			'mei_vis_1': $('#mei_vis_1_'+maq).val(),
+			'mei_vis_2': $('#mei_vis_2_'+maq).val(),
+			'mei_vis_3': $('#mei_vis_3_'+maq).val(),
+			'mei_vis_4': $('#mei_vis_4_'+maq).val(),
+			'mei_vis_5': $('#mei_vis_5_'+maq).val(),
+			'mei_vis_6': $('#mei_vis_6_'+maq).val(),
+			'mei_vis_7': $('#mei_vis_7_'+maq).val(),
+			'mei_vis_8': $('#mei_vis_8_'+maq).val(),
+			'mei_cat_blanca': $('#mei_cat_blanca_'+maq).val(),
+			'mei_cat_color': $('#mei_cat_color_'+maq).val(),
+			'mei_hume_area': $('#mei_hume_area_'+maq).val(),
+			'mei_temp_infrarojo': $('#mei_temp_infrarojo_'+maq).val(),
+			'mei_temp_tablero': $('#mei_temp_tablero_'+maq).val(),
+			'mei_temp_area': $('#mei_temp_area_'+maq).val(),
+		}
+		datos.mei_metro = $('#mei_metro_'+id+'_1').val()+'|';
+		datos.mei_ancho_plano = $('#mei_ancho_plano_'+id+'_1').val()+'|';
+		for(qM=2;qM<=qtyMediciones;qM++){
+			datos.mei_metro+=$('#mei_metro_'+id+'_'+qM).val()+'|';
+			datos.mei_ancho_plano+=$('#mei_ancho_plano_'+id+'_'+qM).val()+'|';
+		}
 		$.ajax({
-	        url: '/extrusoras_app/ajax/guardarMedicionImpresion/',
-	        dataType: 'json',
-	        type: 'POST',
-	        data:{
-						'ope_id': $('#ope_id_'+maq).val(),
-						'maq_id': maq,
-						'rem_id': $('#rem_id_'+maq).val(),
-						'bob_id': $('#bob_id_'+maq).val(),
-						'mei_vis_1': $('#mei_vis_1_'+maq).val(),
-						'mei_vis_2': $('#mei_vis_2_'+maq).val(),
-						'mei_vis_3': $('#mei_vis_3_'+maq).val(),
-						'mei_vis_4': $('#mei_vis_4_'+maq).val(),
-						'mei_vis_5': $('#mei_vis_5_'+maq).val(),
-						'mei_vis_6': $('#mei_vis_6_'+maq).val(),
-						'mei_vis_7': $('#mei_vis_7_'+maq).val(),
-						'mei_vis_8': $('#mei_vis_8_'+maq).val(),
-						'mei_cat_blanca': $('#mei_cat_blanca_'+maq).val(),
-						'mei_cat_color': $('#mei_cat_color_'+maq).val(),
-						'mei_hume_area': $('#mei_hume_area_'+maq).val(),
-						'mei_metro': $('#mei_metro_'+maq).val(),
-						'mei_ancho_plano': $('#mei_ancho_plano_'+maq).val(),
-						'mei_temp_infrarojo': $('#mei_temp_infrarojo_'+maq).val(),
-						'mei_temp_tablero': $('#mei_temp_tablero_'+maq).val(),
-						'mei_temp_area': $('#mei_temp_area_'+maq).val(),
-	        },
-	        success: function (data) {
-						if(data["medicion"]){
-							showMessage('msg_medicion_'+maq,"Medición almacenada correctamente!","alert-success");
-							$('html, body').animate({
-								scrollTop: $('#msg_medicion_'+maq).offset().top
-							}, 1500);
-							if($('#historial_medicion_'+maq+' #tabla_mediciones').length<=0){
-								let $header = headerMedicionBobinas();
-								$('#historial_medicion_'+maq+' #tabla_historial_medicion').html($header);
-								$('#historial_medicion_'+maq).show();
-							}
-							let $row = rowMedicionBobina($('#bob_id_'+maq).val(),
-								data["medicion"].numero, data["medicion"].fecha,
-								data["medicion"].hora, data["medicion"].metro,
-								data["medicion"].ancho, data["medicion"].cat_blanca,
-								data["medicion"].cat_color, data["medicion"].vis_1,
-								data["medicion"].vis_2, data["medicion"].vis_3,
-								data["medicion"].vis_4,data["medicion"].vis_5,
-								data["medicion"].vis_6,data["medicion"].vis_7,
-								data["medicion"].vis_8,data["medicion"].temp_infrarojo,
-								data["medicion"].temp_tablero,data["medicion"].temp_area,
-								data["medicion"].hume_area);
-							$('#historial_medicion_'+maq+' #tabla_mediciones').append($row);
-							$('#mei_metro_'+maq+', #mei_ancho_plano_'+maq+', #mei_cat_blanca_'+maq+', #mei_cat_color_'+maq).val("");
-							$('#mei_vis_1_'+maq+', #mei_vis_2_'+maq+', #mei_vis_3_'+maq).val("");
-							$('#mei_vis_4_'+maq+', #mei_vis_5_'+maq+', #mei_vis_6_'+maq).val("");
-							$('#mei_vis_7_'+maq+', #mei_vis_8_'+maq+', #mei_temp_infrarojo_'+maq).val("");
-							$('#mei_temp_tablero_'+maq+', #mei_temp_area_'+maq+', #mei_hume_area_'+maq).val("");
-						}else{
-							showMessage('msg_medicion_'+maq,"Problemas al almacenar la medición!","alert-danger");
-							$('html, body').animate({
-								scrollTop: $('#msg_medicion_'+maq).offset().top
-							}, 1500);
-						}
+			url: '/extrusoras_app/ajax/guardarMedicionImpresion/',
+			dataType: 'json',
+			type: 'POST',
+			data: datos,
+			success: function (data) {
+				if(data["medicion"].length>0){
+					showMessage('msg_medicion_'+maq,"Medición almacenada correctamente!","alert-success");
+					$('html, body').animate({
+						scrollTop: $('#msg_medicion_'+maq).offset().top
+					}, 1500);
+					if($('#historial_medicion_'+maq+' #tabla_mediciones').length<=0){
+						let $header = headerMedicionBobinas();
+						$('#historial_medicion_'+maq+' #tabla_historial_medicion').html($header);
+						$('#historial_medicion_'+maq).show();
 					}
-			});
+					for(j=0;j<data["medicion"].length;j++){
+						let $row = rowMedicionBobina($('#bob_id_'+maq).val(),
+							data["medicion"][j].numero, data["medicion"][j].fecha,
+							data["medicion"][j].hora, data["medicion"][j].metro,
+							data["medicion"][j].ancho, data["medicion"][j].cat_blanca,
+							data["medicion"][j].cat_color, data["medicion"][j].vis_1,
+							data["medicion"][j].vis_2, data["medicion"][j].vis_3,
+							data["medicion"][j].vis_4,data["medicion"][j].vis_5,
+							data["medicion"][j].vis_6,data["medicion"][j].vis_7,
+							data["medicion"][j].vis_8,data["medicion"][j].temp_infrarojo,
+							data["medicion"][j].temp_tablero,data["medicion"][j].temp_area,
+							data["medicion"][j].hume_area);
+							$('#historial_medicion_'+maq+' #tabla_mediciones').append($row);
+					}
+					$('[id^=mei_metro_'+maq+'], [id^=mei_ancho_plano_'+maq+']').val("");
+					$('[id^=mei_metro_'+maq+'], [id^=mei_ancho_plano_'+maq+']').each(function(){
+						if(($(this).attr("name")=="mei_metro" && $(this).attr("id").split("_")[3]!=1) || ($(this).attr("name")=="mei_ancho_plano" && $(this).attr("id").split("_")[4]!=1))
+						{
+							$(this).prop("disabled",true);
+						}
+					});
+					$('#mei_cat_blanca_'+maq+', #mei_cat_color_'+maq).val("");
+					$('#mei_vis_1_'+maq+', #mei_vis_2_'+maq+', #mei_vis_3_'+maq).val("");
+					$('#mei_vis_4_'+maq+', #mei_vis_5_'+maq+', #mei_vis_6_'+maq).val("");
+					$('#mei_vis_7_'+maq+', #mei_vis_8_'+maq+', #mei_temp_infrarojo_'+maq).val("");
+					$('#mei_temp_tablero_'+maq+', #mei_temp_area_'+maq+', #mei_hume_area_'+maq).val("");
+				}else{
+					showMessage('msg_medicion_'+maq,"Problemas al almacenar la medición!","alert-danger");
+					$('html, body').animate({
+						scrollTop: $('#msg_medicion_'+maq).offset().top
+					}, 1500);
+				}
+			}
+		});
 	}else{
 		showMessage('msg_medicion_'+maq,"Debe haber creado una Bobina!","alert-warning");
 		$('html, body').animate({
@@ -343,26 +380,26 @@ function headerMedicionBobinas(){
 function rowMedicionBobina(id_bobina, nro, fecha, hora, metro, ancho, tin_blan,
 	tin_col, v1,v2,v3,v4,v5,v6,v7,v8,temp_infra,temp_tabl,temp_area,hum_area){
 	let $row = '<tr>';
-	$row += '<td>'+id_bobina+'<td>';
-	$row += '<td>'+nro+'<td>';
-	$row += '<td>'+fecha+'<td>';
-	$row += '<td>'+hora+'<td>';
-	$row += '<td>'+metro+'<td>';
-	$row += '<td>'+ancho+'<td>';
-	$row += '<td>'+tin_blan+'<td>';
-	$row += '<td>'+tin_col+'<td>';
-	$row += '<td>'+v1+'<td>';
-	$row += '<td>'+v2+'<td>';
-	$row += '<td>'+v3+'<td>';
-	$row += '<td>'+v4+'<td>';
-	$row += '<td>'+v5+'<td>';
-	$row += '<td>'+v6+'<td>';
-	$row += '<td>'+v7+'<td>';
-	$row += '<td>'+v8+'<td>';
-	$row += '<td>'+temp_infra+'<td>';
-	$row += '<td>'+temp_tabl+'<td>';
-	$row += '<td>'+temp_area+'<td>';
-	$row += '<td>'+hum_area+'<td>';
+	$row += '<td>'+id_bobina+'</td>';
+	$row += '<td>'+nro+'</td>';
+	$row += '<td>'+fecha+'</td>';
+	$row += '<td>'+hora+'</td>';
+	$row += '<td>'+metro+'</td>';
+	$row += '<td>'+ancho+'</td>';
+	$row += '<td>'+tin_blan+'</td>';
+	$row += '<td>'+tin_col+'</td>';
+	$row += '<td>'+v1+'</td>';
+	$row += '<td>'+v2+'</td>';
+	$row += '<td>'+v3+'</td>';
+	$row += '<td>'+v4+'</td>';
+	$row += '<td>'+v5+'</td>';
+	$row += '<td>'+v6+'</td>';
+	$row += '<td>'+v7+'</td>';
+	$row += '<td>'+v8+'</td>';
+	$row += '<td>'+temp_infra+'</td>';
+	$row += '<td>'+temp_tabl+'</td>';
+	$row += '<td>'+temp_area+'</td>';
+	$row += '<td>'+hum_area+'</td>';
 	$row += '</tr>';
 	return $row;
 }

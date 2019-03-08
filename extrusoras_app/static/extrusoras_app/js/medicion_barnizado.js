@@ -110,9 +110,8 @@ function guardarBobina(){
 				'maq_id': maq,
 				'ope_id': $('#ope_id_'+maq).val(),
 				'bob_id': $('#bob_id_'+maq).val(),
-				'bob_metros': $('#bob_metros_'+maq).val(),
-				'bob_peso': $('#bob_peso_'+maq).val(),
-				'bob_observacion': $('#bob_observacion_'+maq).val(),
+				'bob_metros': $('#bob_metro_imp_'+maq).val(),
+				'bob_peso': $('#bob_peso_imp_'+maq).val(),
 				'dep_id': 4,
 			},
 			success: function (data) {
